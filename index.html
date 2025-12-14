@@ -165,10 +165,10 @@
 
 <script>
 // ==========================================
-// 🔴 PASTE YOUR GOOGLE URL HERE 🔴
+// 🔴 PASTE YOUR LINK BELOW (ONLY HERE!)
 // ==========================================
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyGduRoYBjW9ODGHL4p0mxI3TFFozm9wqtFAtPcy5L1ZvTLlOUe79Kly3t0OtTqeF5Xow/exec"; 
-// ^^^ Delete PASTE_YOUR_LINK_HERE and paste your https://script.google.com... link inside the quotes
+
 
 // App Logic
 let entries=[], purchasesRows=[], expensesRows=[], rowIdSeq=1;
@@ -188,13 +188,8 @@ function setStatus(msg, type){
 
 // ☁️ CLOUD SYNC FUNCTIONS ☁️
 async function fetchFromCloud(){
-  if(GOOGLE_SCRIPT_URL.includes("paste ur link")){
-    setStatus("Error: Google Link Not Setup", "sync-error");
-    return;
-  }
   setStatus("جاري تحميل البيانات من السحابة...", "sync-loading");
   try{
-    // Important: Use redirect:'follow' for GET requests
     const res = await fetch(GOOGLE_SCRIPT_URL, { redirect: "follow" });
     const data = await res.json();
     if(Array.isArray(data)){
@@ -211,7 +206,6 @@ async function fetchFromCloud(){
 async function sendToCloud(dayData){
   setStatus("جاري الحفظ في السحابة...", "sync-loading");
   try{
-    // FORCE TEXT/PLAIN MODE (This is what fixed the error!)
     const res = await fetch(GOOGLE_SCRIPT_URL, {
       method: 'POST',
       redirect: "follow",
@@ -233,12 +227,10 @@ async function sendToCloud(dayData){
 async function forceUploadAll(){
   if(!entries.length) return alert("لا يوجد بيانات لرفعها!");
   if(!confirm("هل أنت متأكد؟ سيتم رفع " + entries.length + " يوم إلى Google Sheets.")) return;
-  
   setStatus("بدأ الرفع الجماعي... يرجى الانتظار", "sync-loading");
   let count = 0;
   for(const entry of entries){
     try {
-      // Use the same robust fetch method here
       await fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST', 
         redirect: "follow",
