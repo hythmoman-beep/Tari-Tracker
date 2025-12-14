@@ -5,281 +5,274 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#050608">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>Tari Profit Tracker (Pro)</title>
+  <title>Tari Profit Tracker (Cloud)</title>
   
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon-192.png">
 
   <style>
-    :root{--bg:#050608;--card:#111318;--accent:#00b894;--text-main:#f5f5f5;--text-muted:#9e9e9e;--border:#2c3038;}
+    :root{--bg:#050608;--card:#111318;--accent:#00b894;--accent-soft:#004d40;--danger:#ff5252;--warning:#f1c40f;--text-main:#f5f5f5;--text-muted:#9e9e9e;--border:#2c3038;}
     *{box-sizing:border-box;}
-    body{margin:0;padding:10px;font-family:system-ui,-apple-system,sans-serif;background:radial-gradient(circle at top,#111318 0,#050608 45%,#000 100%);color:var(--text-main);padding-bottom:60px;}
+    body{margin:0;padding:10px;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at top,#111318 0,#050608 45%,#000 100%);color:var(--text-main);-webkit-tap-highlight-color:transparent;padding-bottom:60px;}
     .wrapper{max-width:980px;margin:0 auto 32px auto;}
     .header{background:linear-gradient(135deg,#000,#111318);border-radius:18px;padding:14px 16px;box-shadow:0 14px 30px rgba(0,0,0,0.65);margin-bottom:14px;border:1px solid #272b35;text-align:center;}
-    .header-title{font-size:20px;font-weight:700;}
-    
-    .card{background:linear-gradient(145deg,#111318,#0a0c10);border-radius:16px;padding:12px;margin-bottom:14px;border:1px solid #1f222a;}
+    .header-title{font-size:20px;font-weight:700;margin-bottom:4px;}
+    .header-sub{font-size:11px;color:var(--text-muted);line-height:1.5;}
+    .card{background:linear-gradient(145deg,#111318,#0a0c10);border-radius:16px;padding:12px;box-shadow:0 10px 30px rgba(0,0,0,0.55);border:1px solid #1f222a;margin-bottom:14px;}
     .section-title{font-size:13px;font-weight:700;margin:10px 0 6px;display:flex;justify-content:space-between;align-items:center;color:var(--accent);}
     .row2{display:flex;gap:10px;margin-bottom:6px;}
+    @media(max-width:720px){.row2{flex-direction:column;}}
     .field{flex:1;}
     .field label{display:block;font-size:11px;margin-bottom:4px;color:var(--text-muted);}
-    .field input{width:100%;padding:8px 10px;border-radius:12px;border:1px solid var(--border);background:#05070b;color:var(--text-main);outline:none;}
-    .field input:focus{border-color:var(--accent);}
-    
-    table{width:100%;border-collapse:collapse;font-size:12px;}
+    .field input[type="date"],.field input[type="text"],.field input[type="number"]{width:100%;padding:8px 10px;border-radius:12px;border:1px solid var(--border);background:#05070b;color:var(--text-main);font-size:13px;outline:none;}
+    .field input:focus{border-color:var(--accent);box-shadow:0 0 0 1px rgba(0,184,148,0.8);}
+    table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:4px;}
     th,td{padding:6px 4px;text-align:center;border-bottom:1px solid #222633;}
-    th{background:#141821;color:var(--accent);}
-    
-    .summary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px;}
-    .summary-box{background:#0c1016;border-radius:14px;padding:8px;border:1px solid #262a35;text-align:center;}
+    th{background:#141821;color:var(--accent);font-weight:600;}
+    tr:nth-child(even) td{background:#0f1218;}
+    .cat-input{width:100%;padding:4px 6px;border-radius:8px;border:1px solid var(--border);background:#05070b;color:var(--text-main);font-size:12px;outline:none;}
+    .cat-input:focus{border-color:var(--accent);box-shadow:0 0 0 1px rgba(0,184,148,0.8);}
+    .btn-small{padding:4px 9px;font-size:11px;border-radius:999px;border:1px dashed #374151;background:#111318;color:var(--text-muted);cursor:pointer;}
+    .summary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px;}
+    @media(min-width:780px){.summary-grid{grid-template-columns:repeat(3,minmax(0,1fr));}}
+    .summary-box{background:#0c1016;border-radius:14px;padding:8px;border:1px solid #262a35;text-align:center;font-size:12px;box-shadow:0 4px 14px rgba(0,0,0,0.6);}
+    .summary-box-total{background:radial-gradient(circle at top,#00b894,#004d40);border-color:#00b894;color:#ffffff;}
+    .summary-box-month{background:radial-gradient(circle at top,#2980b9,#1a5276);border-color:#3498db;color:#ffffff;}
+    .summary-label{color:var(--text-muted);font-size:11px;}
+    .summary-box-total .summary-label,.summary-box-month .summary-label{color:rgba(255,255,255,0.8);}
     .summary-value{margin-top:4px;font-size:16px;font-weight:700;}
-    
     .btn-row{display:flex;flex-direction:column;gap:6px;margin-top:10px;}
-    .btn{width:100%;padding:12px;border-radius:12px;border:none;font-weight:700;cursor:pointer;color:#fff;}
+    .btn{width:100%;padding:12px 10px;border-radius:12px;border:none;font-size:13px;font-weight:600;cursor:pointer;color:#fff;background:#1f2933;box-shadow:0 6px 14px rgba(0,0,0,0.7);transition:transform 0.1s;}
+    .btn:active{transform:scale(0.98);}
     .btn-main{background:linear-gradient(135deg,#00b894,#00a884);}
-    .btn-update{background:linear-gradient(135deg,#e67e22,#d35400);} /* Orange for Update */
     .btn-share{background:#128C7E;}
     .btn-secondary{background:#374151;}
-    .btn-ai{background:linear-gradient(135deg,#8e44ad,#9b59b6); margin-top:5px;}
+    .btn-danger{background:#c0392b;}
+    .hist-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:12px;}
+    .hist-title{font-weight:700;}.hist-title span{color:var(--accent);}
+    .hist-info{color:var(--text-muted);font-size:11px;}
+    .history-row-bad td{background:#22080b !important;}
+    .note{margin-top:8px;font-size:10px;color:var(--text-muted);line-height:1.5;}
     
-    .ai-result{background:#151822; padding:10px; border-radius:12px; margin-top:8px; font-size:11px; display:none; border:1px dashed #8e44ad; line-height:1.6;}
-
     .sync-status {text-align: center;padding: 6px;margin-bottom: 10px;font-size: 11px;border-radius: 8px;display: none;}
+    .sync-loading { background: #2c3e50; color: #3498db; display:block; }
     .sync-success { background: rgba(0,184,148,0.2); color: #00b894; display:block; }
     .sync-error { background: rgba(255,82,82,0.2); color: #ff5252; display:block; }
-    .sync-loading { background: #2c3e50; color: #3498db; display:block; }
+
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;justify-content:center;align-items:center;padding:16px;backdrop-filter:blur(4px);}
+    .modal-content{background:#111318;border-radius:18px;border:1px solid #2a2d37;max-width:520px;width:100%;max-height:90vh;overflow-y:auto;padding:16px 16px 18px;box-shadow:0 18px 40px rgba(0,0,0,0.9);}
+    .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+    .modal-title{font-size:14px;font-weight:700;}
+    .modal-close{background:none;border:none;color:#aaa;font-size:22px;cursor:pointer;}
+    .upload-group{background:#151822;border-radius:12px;border:1px solid #303443;padding:10px 10px;margin-bottom:10px;}
+    .group-label{font-size:12px;color:var(--accent);margin-bottom:6px;border-bottom:1px solid #262a35;padding-bottom:4px;font-weight:600;}
+    .up-btn-row{display:flex;gap:8px;flex-wrap:wrap;}
+    .up-btn{flex:1 1 140px;border-radius:10px;border:1px dashed #4b5163;background:#191d28;padding:10px 6px;cursor:pointer;font-size:11px;color:#d1d5db;text-align:center;}
+    .up-btn:hover{border-color:var(--accent);background:#1f2330;}
+    .file-list{margin-top:6px;display:flex;flex-direction:column;gap:4px;}
+    .file-tag{background:#050608;border-radius:7px;padding:4px 8px;font-size:10px;display:flex;justify-content:space-between;align-items:center;border-right:3px solid var(--accent);}
+    .file-name{max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .del-file{cursor:pointer;color:#ff7676;font-weight:700;padding-left:6px;}
+    .ai-list{font-size:11px;margin:0;padding-left:18px;direction:rtl;}
+    .ai-list li{margin-bottom:6px;position:relative;}
+    .ai-tag{display:inline-block;padding:2px 6px;border-radius:4px;font-size:9px;font-weight:bold;margin-left:5px;}
+    .tag-green{background:rgba(0,184,148,0.2);color:#00b894;}.tag-red{background:rgba(255,82,82,0.2);color:#ff5252;}.tag-blue{background:rgba(52,152,219,0.2);color:#3498db;}.tag-yellow{background:rgba(241,196,15,0.2);color:#f1c40f;}
     
-    /* Attachments Modal Styles */
-    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:99;justify-content:center;align-items:center;}
-    .modal-content{background:#111;padding:20px;border-radius:16px;width:90%;max-width:400px;border:1px solid #333;}
-</style>
+    .data-tools{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+    .btn-data{flex:1 1 45%;background:#2c3e50;font-size:11px;padding:8px;border-radius:8px;color:#bdc3c7;border:1px solid #34495e;}
+    .btn-force-upload{background:#c0392b;border-color:#e74c3c;color:#fff;}
+    
+    @media print{body{background:#000;padding:0;}.btn-row,.note,.modal-overlay,.data-tools{display:none !important;}.card,.header{box-shadow:none;border-radius:0;}}
+  </style>
 </head>
 <body>
 <div class="wrapper">
   <div class="header">
-    <div class="header-title">Tari Profit Tracker <span style="font-size:10px;color:#00b894;border:1px solid #00b894;padding:2px 6px;border-radius:4px;">PRO</span></div>
-    <div style="font-size:11px;color:#888;margin-top:5px;">System: Online & Syncing</div>
+    <div class="header-title">Tari Profit Tracker <span style="font-size:10px;color:#00b894;vertical-align:middle;border:1px solid #00b894;padding:2px 6px;border-radius:4px;">CLOUD</span></div>
+    <div class="header-sub">
+      صافي الربح = إجمالي المبيعات − إجمالي المشتريات − إجمالي المصروفات<br>
+      صافي الكاش = كاش المبيعات − (كاش المشتريات + كاش المصروفات)
+    </div>
   </div>
 
   <div class="card">
-    <div id="syncStatus" class="sync-status"></div>
+    <div id="syncStatus" class="sync-status">جاري الاتصال بالسحابة...</div>
 
     <div class="section-title"><span>بيانات اليوم</span></div>
     <div class="row2">
       <div class="field"><label>تاريخ اليوم</label><input type="date" id="dateInput"></div>
-      <div class="field"><label>ملاحظة</label><input type="text" id="noteInput" placeholder="..."></div>
+      <div class="field"><label>ملاحظة (اختياري)</label><input type="text" id="noteInput" placeholder="مثال: شغل ضعيف، مطر، عروض .."></div>
     </div>
-    
     <div class="section-title"><span>المبيعات</span></div>
     <div class="row2">
-      <div class="field"><label>كاش</label><input type="number" id="salesCash"></div>
-      <div class="field"><label>شبكة</label><input type="number" id="salesCard"></div>
+      <div class="field"><label>مبيعات كاش</label><input type="number" id="salesCash" min="0" step="0.01"></div>
+      <div class="field"><label>مبيعات شبكة</label><input type="number" id="salesCard" min="0" step="0.01"></div>
     </div>
-
-    <div class="section-title"><span>المشتريات</span><button class="btn-secondary" style="padding:2px 8px;border-radius:8px;" onclick="addRow('purchase')">+</button></div>
-    <table id="purchasesTable"><tbody></tbody></table>
-
-    <div class="section-title"><span>مصروفات</span><button class="btn-secondary" style="padding:2px 8px;border-radius:8px;" onclick="addRow('expense')">+</button></div>
-    <table id="expensesTable"><tbody></tbody></table>
+    <div class="section-title"><span>المشتريات (تكلفة البضاعة)</span><button type="button" class="btn-small" onclick="addRow('purchase')">إضافة حقل</button></div>
+    <div style="overflow-x:auto;"><table><thead><tr><th>الفئة</th><th>كاش</th><th>شبكة</th><th>حذف</th></tr></thead><tbody id="purchasesBody"></tbody></table></div>
+    <div class="section-title"><span>مصروفات تشغيلية</span><button type="button" class="btn-small" onclick="addRow('expense')">إضافة حقل</button></div>
+    <div style="overflow-x:auto;"><table><thead><tr><th>الفئة</th><th>كاش</th><th>شبكة</th><th>حذف</th></tr></thead><tbody id="expensesBody"></tbody></table></div>
     
     <div class="section-title"><span>الملخص الفوري</span></div>
     <div class="summary-grid">
-      <div class="summary-box"><div style="color:#aaa;font-size:10px;">صافي الربح</div><div class="summary-value" id="netTodayDisplay" style="color:#00b894">0.00</div></div>
-      <div class="summary-box"><div style="color:#aaa;font-size:10px;">صافي الكاش</div><div class="summary-value" id="netCashTodayDisplay" style="color:#3498db">0.00</div></div>
+      <div class="summary-box"><div class="summary-label">صافي ربح اليوم</div><div class="summary-value" id="netTodayDisplay">0.00</div></div>
+      <div class="summary-box"><div class="summary-label">صافي الكاش اليوم</div><div class="summary-value" id="netCashTodayDisplay">0.00</div></div>
+      <div class="summary-box summary-box-total"><div class="summary-label">تراكمي صافي الربح</div><div class="summary-value" id="totalNetAllDisplay">0.00</div></div>
+      <div class="summary-box summary-box-total"><div class="summary-label">تراكمي صافي الكاش</div><div class="summary-value" id="totalNetCashAllDisplay">0.00</div></div>
+      <div class="summary-box summary-box-month"><div class="summary-label">مبيعات هذا الشهر</div><div class="summary-value" id="monthSalesDisplay">0.00</div></div>
     </div>
 
-    <button class="btn btn-ai" onclick="generateAIInsights()">🤖 تحليل الذكاء الاصطناعي (AI Insights)</button>
-    <div id="aiResult" class="ai-result"></div>
-
     <div class="btn-row">
-      <button id="saveBtn" class="btn btn-main" onclick="saveDay()">💾 حفظ اليوم (Save New)</button>
-      <button class="btn btn-share" onclick="alert('Feature coming soon!')">📤 مشاركة التقرير</button>
-      <button class="btn btn-secondary" onclick="newDay()">📄 يوم جديد (Reset)</button>
-      <button class="btn btn-secondary" style="background:#444;" onclick="forceUploadAll()">☁️ Force Upload All</button>
+      <button class="btn btn-main" onclick="saveDay()">حفظ اليوم (Cloud Sync)</button>
+      <button class="btn btn-share" onclick="openUploadModal()">مشاركة / حفظ تقرير اليوم</button>
+      <button class="btn btn-secondary" onclick="newDay()">يوم جديد</button>
+    </div>
+
+    <div class="data-tools">
+      <button class="btn btn-data" onclick="backupData()">📥 نسخ احتياطي (Local)</button>
+      <button class="btn btn-data" onclick="document.getElementById('importFile').click()">📤 استعادة بيانات (Local)</button>
+      <button class="btn btn-data btn-force-upload" onclick="forceUploadAll()">☁️ رفع كامل السجل للسحابة</button>
+    </div>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="restoreData(this)">
+    
+    <div class="note">
+      • ملاحظة: البيانات في السحابة آمنة. يمكنك الوصول إليها من أي جهاز.
     </div>
   </div>
 
   <div class="card">
-    <div class="section-title"><span>سجل الأيام السابقة</span></div>
-    <div style="overflow-x:auto;">
-      <table style="width:100%;">
-        <thead><tr><th>التاريخ</th><th>الصافي</th><th>تعديل</th></tr></thead>
-        <tbody id="historyBody"></tbody>
-      </table>
+    <div class="hist-header">
+      <div class="hist-title">سجل الأيام السابقة <span>(Cloud)</span></div>
+      <div class="hist-info" id="rangeSummary"></div>
     </div>
+    <div style="overflow-x:auto;">
+      <table><thead><tr><th>التاريخ</th><th>المبيعات</th><th>المشتريات</th><th>المصروفات</th><th>صافي الربح</th><th>صافي الكاش</th><th>تعديل</th></tr></thead><tbody id="historyBody"></tbody></table>
+    </div>
+  </div>
+</div>
+
+<div id="uploadModal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header"><div class="modal-title">إرفاق المستندات لتقرير اليوم</div><button class="modal-close" onclick="closeUploadModal()">×</button></div>
+    <div class="upload-group"><div class="group-label">Summary & Report</div><div class="up-btn-row"><button class="up-btn" onclick="setAttachType('summaryReport')">اختر ملفات</button></div><div id="list_summaryReport" class="file-list"></div></div>
+    <div class="upload-group"><div class="group-label">فواتير (كاش)</div><div class="up-btn-row"><button class="up-btn" onclick="setAttachType('purchCash')">اختر ملفات</button></div><div id="list_purchCash" class="file-list"></div></div>
+    <div class="upload-group"><div class="group-label">فواتير (شبكة)</div><div class="up-btn-row"><button class="up-btn" onclick="setAttachType('purchCard')">اختر ملفات</button></div><div id="list_purchCard" class="file-list"></div></div>
+    <div class="upload-group"><div class="group-label">إيصالات POS</div><div class="up-btn-row"><button class="up-btn" onclick="setAttachType('pos')">اختر ملفات</button></div><div id="list_pos" class="file-list"></div></div>
+    <input id="fileInput" type="file" multiple accept="image/*,application/pdf" style="display:none" onchange="handleFiles(this)">
+    <button class="btn btn-share" style="margin-top:10px;" onclick="generateAndShareReport()">إنشاء ومشاركة التقرير</button>
   </div>
 </div>
 
 <script>
 // ==========================================
-// 🔴 PASTE YOUR LINK HERE 🔴
+// 🔴 PASTE YOUR GOOGLE URL HERE 🔴
 // ==========================================
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyGduRoYBjW9ODGHL4p0mxI3TFFozm9wqtFAtPcy5L1ZvTLlOUe79Kly3t0OtTqeF5Xow/exec"; 
+// ^^^ Delete PASTE_YOUR_LINK_HERE and paste your https://script.google.com... link inside the quotes
 
-
+// App Logic
 let entries=[], purchasesRows=[], expensesRows=[], rowIdSeq=1;
+let attachments = {summaryReport:[], purchCash:[], purchCard:[], pos:[]};
+let currentAttachType = "purchCash";
 
-// --- CORE FUNCTIONS ---
-function init(){
-  document.getElementById("dateInput").value = new Date().toISOString().split('T')[0];
-  initDefaultRows();
-  ["salesCash","salesCard"].forEach(id=>document.getElementById(id).addEventListener("input",recalcLive));
-  fetchFromCloud();
+function toNum(v){const n=parseFloat(v);return isNaN(n)?0:n;}
+function formatMoney(n){return n.toFixed(2);}
+function todayISO(){const d=new Date();const y=d.getFullYear();const m=String(d.getMonth()+1).padStart(2,"0");const day=String(d.getDate()).padStart(2,"0");return `${y}-${m}-${day}`;}
+
+// Status Helper
+function setStatus(msg, type){
+  const el = document.getElementById("syncStatus");
+  el.textContent = msg;
+  el.className = "sync-status " + (type || "");
 }
 
-function initDefaultRows(){
-  purchasesRows=[{id:1,name:"Romi",cash:"",card:""},{id:2,name:"Veg",cash:"",card:""}];
-  expensesRows=[{id:3,name:"Gas",cash:"",card:""}];
-  rowIdSeq=4;
-  renderRows("purchase"); renderRows("expense");
-}
-
-function renderRows(kind){
-  const arr = (kind==="purchase")?purchasesRows:expensesRows;
-  const tb = document.getElementById(kind==="purchase"?"purchasesTable":"expensesTable").querySelector("tbody");
-  tb.innerHTML = arr.map(r => `
-    <tr>
-      <td><input value="${r.name||''}" oninput="updateRow('${kind}',${r.id},'name',this.value)" placeholder="Name" style="background:transparent;border:none;color:#fff;width:100%;"></td>
-      <td><input type="number" value="${r.cash||''}" oninput="updateRow('${kind}',${r.id},'cash',this.value)" placeholder="0" style="background:#111;border:1px solid #333;color:#fff;width:60px;border-radius:4px;"></td>
-      <td><input type="number" value="${r.card||''}" oninput="updateRow('${kind}',${r.id},'card',this.value)" placeholder="0" style="background:#111;border:1px solid #333;color:#fff;width:60px;border-radius:4px;"></td>
-      <td onclick="delRow('${kind}',${r.id})" style="color:red;cursor:pointer;">×</td>
-    </tr>`).join('');
-}
-
-window.updateRow=(k,id,f,v)=>{ const arr=(k==="purchase")?purchasesRows:expensesRows; const r=arr.find(x=>x.id===id); if(r){r[f]=v; recalcLive();} };
-window.delRow=(k,id)=>{ const arr=(k==="purchase")?purchasesRows:expensesRows; const idx=arr.findIndex(x=>x.id===id); if(idx>-1){arr.splice(idx,1); renderRows(k); recalcLive();} };
-window.addRow=(k)=>{ const arr=(k==="purchase")?purchasesRows:expensesRows; arr.push({id:rowIdSeq++,name:"",cash:"",card:""}); renderRows(k); };
-
-function recalcLive(){
-  const sc=Number(document.getElementById("salesCash").value)||0;
-  const sd=Number(document.getElementById("salesCard").value)||0;
-  
-  let pc=0, pd=0; purchasesRows.forEach(r=>{ pc+=Number(r.cash)||0; pd+=Number(r.card)||0; });
-  let ec=0, ed=0; expensesRows.forEach(r=>{ ec+=Number(r.cash)||0; ed+=Number(r.card)||0; });
-  
-  const net = (sc+sd) - (pc+pd) - (ec+ed);
-  const netCash = sc - (pc+ec);
-  
-  document.getElementById("netTodayDisplay").textContent = net.toFixed(2);
-  document.getElementById("netCashTodayDisplay").textContent = netCash.toFixed(2);
-  
-  return {date:document.getElementById("dateInput").value, net, netCash, sc, sd, purchasesRows, expensesRows};
-}
-
-// --- SAVE / EDIT LOGIC ---
-function saveDay(){
-  const data = recalcLive();
-  const existingIdx = entries.findIndex(e => e.date === data.date);
-  
-  if(existingIdx >= 0){
-    entries[existingIdx] = data; // Update local
-  } else {
-    entries.push(data); // Add new
-  }
-  
-  renderHistory();
-  sendToCloud(data);
-  
-  // Return to "New Day" mode
-  alert("Saved/Updated Successfully!");
-  newDay(); 
-}
-
-function loadDayToForm(date){
-  const e = entries.find(x => x.date === date);
-  if(!e) return;
-  
-  document.getElementById("dateInput").value = e.date;
-  document.getElementById("salesCash").value = e.sc||"";
-  document.getElementById("salesCard").value = e.sd||"";
-  purchasesRows = e.purchasesRows || [];
-  expensesRows = e.expensesRows || [];
-  
-  renderRows("purchase"); renderRows("expense");
-  recalcLive();
-  
-  // CHANGE BUTTON STYLE
-  const btn = document.getElementById("saveBtn");
-  btn.textContent = "🔄 تحديث الملف (Update Existing)";
-  btn.className = "btn btn-update";
-  window.scrollTo({top:0, behavior:'smooth'});
-}
-
-function newDay(){
-  document.getElementById("dateInput").value = new Date().toISOString().split('T')[0];
-  document.getElementById("salesCash").value = "";
-  document.getElementById("salesCard").value = "";
-  initDefaultRows();
-  recalcLive();
-  
-  // RESET BUTTON STYLE
-  const btn = document.getElementById("saveBtn");
-  btn.textContent = "💾 حفظ اليوم (Save New)";
-  btn.className = "btn btn-main";
-}
-
-function renderHistory(){
-  entries.sort((a,b)=> b.date.localeCompare(a.date)); // Newest first
-  document.getElementById("historyBody").innerHTML = entries.map(e => `
-    <tr>
-      <td>${e.date}</td>
-      <td style="color:${e.net>=0?'#00b894':'#ff5252'}">${e.net?.toFixed(0)}</td>
-      <td><button class="btn-secondary" style="padding:4px 10px;font-size:10px;" onclick="loadDayToForm('${e.date}')">✏️ Edit</button></td>
-    </tr>`).join('');
-}
-
-// --- CLOUD SYNC ---
-async function sendToCloud(data){
-  const status = document.getElementById("syncStatus");
-  status.textContent = "Syncing..."; status.style.display="block"; status.className="sync-status sync-loading";
-  
-  try {
-    await fetch(GOOGLE_SCRIPT_URL, {
-      method: 'POST', redirect: "follow",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(data)
-    });
-    status.textContent = "Saved to Cloud ✅"; status.className="sync-status sync-success";
-  } catch(e) {
-    status.textContent = "Cloud Error ❌"; status.className="sync-status sync-error";
-  }
-}
-
+// ☁️ CLOUD SYNC FUNCTIONS ☁️
 async function fetchFromCloud(){
-  try {
-    const res = await fetch(GOOGLE_SCRIPT_URL, {redirect:"follow"});
+  if(GOOGLE_SCRIPT_URL.includes("PASTE_YOUR_LINK")){
+    setStatus("Error: Google Link Not Setup", "sync-error");
+    return;
+  }
+  setStatus("جاري تحميل البيانات من السحابة...", "sync-loading");
+  try{
+    // Important: Use redirect:'follow' for GET requests
+    const res = await fetch(GOOGLE_SCRIPT_URL, { redirect: "follow" });
     const data = await res.json();
-    if(Array.isArray(data)) { entries = data; renderHistory(); }
-  } catch(e) { console.log(e); }
+    if(Array.isArray(data)){
+      entries = data;
+      renderHistory();
+      recalcLive();
+      setStatus("تمت المزامنة بنجاح ✅", "sync-success");
+    }
+  }catch(e){
+    setStatus("فشل الاتصال بالسحابة.", "sync-error");
+  }
+}
+
+async function sendToCloud(dayData){
+  setStatus("جاري الحفظ في السحابة...", "sync-loading");
+  try{
+    // FORCE TEXT/PLAIN MODE (This is what fixed the error!)
+    const res = await fetch(GOOGLE_SCRIPT_URL, {
+      method: 'POST',
+      redirect: "follow",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(dayData)
+    });
+    
+    const txt = await res.text();
+    if(txt.includes("Success")){
+       setStatus("تم الحفظ في السحابة ✅", "sync-success");
+    } else {
+       setStatus("خطأ غير معروف أثناء الحفظ", "sync-error");
+    }
+  }catch(e){
+    setStatus("فشل الحفظ: " + e, "sync-error");
+  }
 }
 
 async function forceUploadAll(){
-  if(!confirm("Re-upload all history?")) return;
-  for(const e of entries) await sendToCloud(e);
-  alert("Done");
+  if(!entries.length) return alert("لا يوجد بيانات لرفعها!");
+  if(!confirm("هل أنت متأكد؟ سيتم رفع " + entries.length + " يوم إلى Google Sheets.")) return;
+  
+  setStatus("بدأ الرفع الجماعي... يرجى الانتظار", "sync-loading");
+  let count = 0;
+  for(const entry of entries){
+    try {
+      // Use the same robust fetch method here
+      await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST', 
+        redirect: "follow",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(entry)
+      });
+      count++;
+      setStatus(`تم رفع ${count} من ${entries.length}`, "sync-loading");
+    } catch(e) {}
+  }
+  setStatus("تم الرفع الجماعي بنجاح ✅", "sync-success");
+  alert("تم الانتهاء! جميع بياناتك في السحابة.");
 }
 
-// --- AI INSIGHTS ---
-function generateAIInsights() {
-  const d = recalcLive();
-  const resultDiv = document.getElementById("aiResult");
-  resultDiv.style.display = "block";
-  
-  let msg = `📊 <b>Report for ${d.date}:</b><br>`;
-  
-  if(d.net > 0) msg += `✅ Good job! You made a profit of <b>${d.net.toFixed(2)}</b>.<br>`;
-  else msg += `⚠️ Warning: Net loss of <b>${d.net.toFixed(2)}</b>.<br>`;
-  
-  if(d.netCash < 0) msg += `📉 Cash Flow Alert: You paid more cash than you collected.<br>`;
-  
-  const totalExp = d.sc + d.sd - d.net; // Approx expense calc
-  if(totalExp > (d.sc+d.sd)*0.5) msg += `💡 Tip: Your costs are very high (${totalExp.toFixed(2)}) compared to sales.<br>`;
-  
-  msg += `<br><i>(This is a local AI analysis based on your rules)</i>`;
-  resultDiv.innerHTML = msg;
-}
+// Local Functions
+function backupData(){const blob=new Blob([JSON.stringify(entries)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`Tari_Backup_${todayISO()}.json`;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);}
+function restoreData(input){const file=input.files[0];if(!file)return;const r=new FileReader();r.onload=e=>{try{const l=JSON.parse(e.target.result);if(Array.isArray(l)&&confirm("استبدال البيانات؟")){entries=l;renderHistory();recalcLive();alert("تم الاستعادة! الآن اضغط 'رفع كامل السجل'.");}}catch(er){alert("ملف غير صالح");}};r.readAsText(file);input.value="";}
+function initDefaultRows(){purchasesRows=[{id:rowIdSeq++,name:"Romi",cash:"",card:""},{id:rowIdSeq++,name:"Vegetables",cash:"",card:""},{id:rowIdSeq++,name:"Packaging",cash:"",card:""}];expensesRows=[{id:rowIdSeq++,name:"Gas",cash:"",card:""},{id:rowIdSeq++,name:"Fuel",cash:"",card:""},{id:rowIdSeq++,name:"Water",cash:"",card:""},{id:rowIdSeq++,name:"Rent",cash:"",card:""}];}
+function renderRows(kind){const rows=(kind==="purchase")?purchasesRows:expensesRows;const tbody=document.getElementById(kind==="purchase"?"purchasesBody":"expensesBody");tbody.innerHTML="";rows.forEach(r=>{const tr=document.createElement("tr");tr.innerHTML=`<td><input type="text" class="cat-input" value="${r.name||''}" data-kind="${kind}" data-id="${r.id}" data-field="name" oninput="handleRowInput(event)"></td><td><input type="number" step="0.01" class="cat-input" value="${r.cash||''}" data-kind="${kind}" data-id="${r.id}" data-field="cash" oninput="handleRowInput(event)"></td><td><input type="number" step="0.01" class="cat-input" value="${r.card||''}" data-kind="${kind}" data-id="${r.id}" data-field="card" oninput="handleRowInput(event)"></td><td><button type="button" class="btn-small" style="color:#ff5252" onclick="deleteRow('${kind}',${r.id})">x</button></td>`;tbody.appendChild(tr);});}
+window.handleRowInput=(e)=>{const k=e.target.dataset.kind,id=parseInt(e.target.dataset.id),f=e.target.dataset.field;const arr=(k==="purchase")?purchasesRows:expensesRows;const r=arr.find(x=>x.id===id);if(r){r[f]=e.target.value;recalcLive();}};
+window.addRow=(k)=>{const arr=(k==="purchase")?purchasesRows:expensesRows;arr.push({id:rowIdSeq++,name:"",cash:"",card:""});renderRows(k);recalcLive();};
+window.deleteRow=(k,id)=>{const arr=(k==="purchase")?purchasesRows:expensesRows;const i=arr.findIndex(x=>x.id===id);if(i!==-1){arr.splice(i,1);renderRows(k);recalcLive();}};
+function computeTotals(sc,sd,pr,er){let pc=0,pd=0,ec=0,ed=0;(pr||[]).forEach(r=>{pc+=toNum(r.cash);pd+=toNum(r.card);});(er||[]).forEach(r=>{ec+=toNum(r.cash);ed+=toNum(r.card);});const ts=sc+sd, tp=pc+pd, te=ec+ed;return {salesCash:sc,salesCard:sd,pCash:pc,pCard:pd,eCash:ec,eCard:ed,totalSales:ts,totalPurchases:tp,totalExpenses:te,net:ts-tp-te,netCash:sc-(pc+ec)};}
+function recalcLive(){const sc=toNum(document.getElementById("salesCash").value), sd=toNum(document.getElementById("salesCard").value);const t=computeTotals(sc,sd,purchasesRows,expensesRows);document.getElementById("netTodayDisplay").textContent=formatMoney(t.net);document.getElementById("netCashTodayDisplay").textContent=formatMoney(t.netCash);const d=document.getElementById("dateInput").value||todayISO();let bn=0,bnc=0, mtot=0, mp=d.substring(0,7);entries.forEach(e=>{if(e.date!==d){bn+=e.net||0;bnc+=e.netCash||0;}if(e.date.startsWith(mp)&&e.date!==d){const ot=computeTotals(e.salesCash||0,e.salesCard||0,e.purchasesRows||[],e.expensesRows||[]);mtot+=ot.totalSales;}});mtot+=t.totalSales;document.getElementById("totalNetAllDisplay").textContent=formatMoney(bn+t.net);document.getElementById("totalNetCashAllDisplay").textContent=formatMoney(bnc+t.netCash);document.getElementById("monthSalesDisplay").textContent=formatMoney(mtot);return {...t,totalNetAll:bn+t.net,totalNetCashAll:bnc+t.netCash,monthlySalesTotal:mtot};}
+function getCurrentData(){const sc=toNum(document.getElementById("salesCash").value), sd=toNum(document.getElementById("salesCard").value);const t=computeTotals(sc,sd,purchasesRows,expensesRows);return {date:document.getElementById("dateInput").value||todayISO(),note:document.getElementById("noteInput").value||"",salesCash:sc,salesCard:sd,purchasesRows:JSON.parse(JSON.stringify(purchasesRows)),expensesRows:JSON.parse(JSON.stringify(expensesRows)),net:t.net,netCash:t.netCash};}
+window.saveDay=()=>{const d=getCurrentData();const i=entries.findIndex(e=>e.date===d.date);if(i>=0)entries[i]=d;else entries.push(d);renderHistory();recalcLive();sendToCloud(d).then(() => fetchFromCloud());};
+window.newDay=()=>{document.getElementById("dateInput").value=todayISO();document.getElementById("noteInput").value="";document.getElementById("salesCash").value="";document.getElementById("salesCard").value="";initDefaultRows();renderRows("purchase");renderRows("expense");recalcLive();};
+window.loadDayToForm=(date)=>{const e=entries.find(x=>x.date===date);if(!e){window.newDay();}else{document.getElementById("dateInput").value=e.date;document.getElementById("noteInput").value=e.note||"";document.getElementById("salesCash").value=e.salesCash??"";document.getElementById("salesCard").value=e.salesCard??"";purchasesRows=e.purchasesRows?JSON.parse(JSON.stringify(e.purchasesRows)):[];expensesRows=e.expensesRows?JSON.parse(JSON.stringify(e.expensesRows)):[];if(!purchasesRows.length&&!expensesRows.length)initDefaultRows();}renderRows("purchase");renderRows("expense");recalcLive();};
+function renderHistory(){entries.sort((a,b)=>(a.date||"").localeCompare(b.date||""));const b=document.getElementById("historyBody");b.innerHTML="";let sn=0,snc=0;entries.forEach(e=>{const t=computeTotals(e.salesCash||0,e.salesCard||0,e.purchasesRows||[],e.expensesRows||[]);sn+=t.net;snc+=t.netCash;const tr=document.createElement("tr");if(t.net<0||t.netCash<0)tr.classList.add("history-row-bad");tr.innerHTML=`<td>${e.date}</td><td>${formatMoney(t.totalSales)}</td><td>${formatMoney(t.totalPurchases)}</td><td>${formatMoney(t.totalExpenses)}</td><td>${formatMoney(t.net)}</td><td>${formatMoney(t.netCash)}</td><td><button class="btn-small" onclick="loadDayToForm('${e.date}');window.scrollTo({top:0,behavior:'smooth'})">Edit</button></td>`;b.appendChild(tr);});document.getElementById("rangeSummary").textContent=entries.length?`Days: ${entries.length} | Net: ${formatMoney(sn)}`:"No Data";}
+window.openUploadModal=()=>{recalcLive();document.getElementById("uploadModal").style.display="flex";};window.closeUploadModal=()=>{document.getElementById("uploadModal").style.display="none";};window.setAttachType=(t)=>{currentAttachType=t;document.getElementById("fileInput").click();};window.handleFiles=(inp)=>{if(!inp.files.length)return;Array.from(inp.files).forEach(f=>{const r=new FileReader();r.onload=e=>{attachments[currentAttachType].push({name:f.name,type:f.type,data:e.target.result});renderAtt(currentAttachType);};r.readAsDataURL(f);});inp.value="";};function renderAtt(t){const b=document.getElementById("list_"+t);b.innerHTML="";attachments[t].forEach((f,i)=>{const d=document.createElement("div");d.className="file-tag";d.innerHTML=`<span class="file-name">${f.name}</span><span class="del-file" onclick="attachments['${t}'].splice(${i},1);renderAtt('${t}')">x</span>`;b.appendChild(d);});}
+window.generateAndShareReport=()=>{const t=recalcLive(), d=document.getElementById("dateInput").value;alert("Generating report for " + d);};
 
-init();
+// INIT
+(function(){document.getElementById("dateInput").value=todayISO();initDefaultRows();renderRows("purchase");renderRows("expense");["salesCash","salesCard"].forEach(id=>document.getElementById(id).addEventListener("input",recalcLive));if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js');}fetchFromCloud();})();
 </script>
 </body>
 </html>
