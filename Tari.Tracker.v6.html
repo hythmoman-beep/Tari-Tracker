@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#050608">
+  <title>Tari Profit Tracker v.7</title>
+  <style>
+    :root{
+      --bg:#050608;
+      --card:#111318;
+      --accent:#00b894;
+      --accent-soft:#004d40;
+      --danger:#ff5252;
+      --warning:#f1c40f;
+      --text-main:#f5f5f5;
+      --text-muted:#9e9e9e;
+      --border:#2c3038;
+    }
+    *{box-sizing:border-box;}
+    body{
+      margin:0;
+      padding:10px;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:radial-gradient(circle at top,#111318 0,#050608 45%,#000 100%);
+      color:var(--text-main);
+      -webkit-tap-highlight-color: transparent;
+      padding-bottom: 60px;
+    }
+    .wrapper{max-width:980px;margin:0 auto 32px auto;}
+
+    .header{
+      background:linear-gradient(135deg,#000,#111318);
+      border-radius:18px;
+      padding:14px 16px;
+      box-shadow:0 14px 30px rgba(0,0,0,0.65);
+      margin-bottom:14px;
+      border:1px solid #272b35;
+      text-align:center;
+    }
+    .header-title{font-size:20px;font-weight:700;margin-bottom:4px;}
+    .header-sub{font-size:11px;color:var(--text-muted);line-height:1.5;}
+
+    .card{
+      background:linear-gradient(145deg,#111318,#0a0c10);
+      border-radius:16px;
+      padding:12px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.55);
+      border:1px solid #1f222a;
+      margin-bottom:14px;
+    }
+    .section-title{
+      font-size:13px;
+      font-weight:700;
+      margin:10px 0 6px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      color:var(--accent);
+    }
+
+    .row2{display:flex;gap:10px;margin-bottom:6px;}
+    @media(max-width:720px){.row2{flex-direction:column;}}
+    .field{flex:1;}
+    .field label{
+      display:block;
+      font-size:11px;
+      margin-bottom:4px;
+      color:var(--text-muted);
+    }
+    .field input[type="date"],
+    .field input[type="text"],
+    .field input[type="number"]{
+      width:100%;
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:#05070b;
+      color:var(--text-main);
+      font-size:13px;
+      outline:none;
+    }
+    .field input:focus{
+      border-color:var(--accent);
+      box-shadow:0 0 0 1px rgba(0,184,148,0.8);
+    }
+
+    table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:4px;}
+    th,td{padding:6px 4px;text-align:center;border-bottom:1px solid #222633;}
+    th{background:#141821;color:var(--accent);font-weight:600;}
+    tr:nth-child(even) td{background:#0f1218;}
+
+    .cat-input{
+      width:100%;
+      padding:4px 6px;
+      border-radius:8px;
+      border:1px solid var(--border);
+      background:#05070b;
+      color:var(--text-main);
+      font-size:12px;
+      outline:none;
+    }
+    .cat-input:focus{
+      border-color:var(--accent);
+      box-shadow:0 0 0 1px rgba(0,184,148,0.8);
+    }
+
+    .btn-small{
+      padding:4px 9px;
+      font-size:11px;
+      border-radius:999px;
+      border:1px dashed #374151;
+      background:#111318;
+      color:var(--text-muted);
+      cursor:pointer;
+    }
+
+    .summary-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:8px;
+      margin-top:8px;
+    }
+    @media(min-width:780px){
+      .summary-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
+    }
+    .summary-box{
+      background:#0c1016;
+      border-radius:14px;
+      padding:8px;
+      border:1px solid #262a35;
+      text-align:center;
+      font-size:12px;
+      box-shadow:0 4px 14px rgba(0,0,0,0.6);
+    }
+    .summary-box-total{
+      background:radial-gradient(circle at top,#00b894,#004d40);
+      border-color:#00b894;
+      color:#ffffff;
+    }
+    .summary-box-month{
+        background:radial-gradient(circle at top,#2980b9,#1a5276);
+        border-color:#3498db;
+        color:#ffffff;
+    }
+
+    .summary-label{color:var(--text-muted);font-size:11px;}
+    .summary-box-total .summary-label, .summary-box-month .summary-label {color: rgba(255,255,255,0.8);}
+    .summary-value{margin-top:4px;font-size:16px;font-weight:700;}
+
+    .btn-row{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      margin-top:10px;
+    }
+    .btn{
+      width:100%;
+      padding:12px 10px;
+      border-radius:12px;
+      border:none;
+      font-size:13px;
+      font-weight:600;
+      cursor:pointer;
+      color:#fff;
+      background:#1f2933;
+      box-shadow:0 6px 14px rgba(0,0,0,0.7);
+      transition: transform 0.1s;
+    }
+    .btn:active{transform:scale(0.98);}
+    
+    .btn-main{background:linear-gradient(135deg,#00b894,#00a884);}
+    .btn-share{background:#128C7E;}
+    .btn-secondary{background:#374151;}
+    .btn-danger{background:#c0392b;}
+    
+    .data-tools{
+      display:flex;
+      gap:8px;
+      margin-top:10px;
+    }
+    .btn-data{
+      flex:1;
+      background:#2c3e50;
+      font-size:11px;
+      padding:8px;
+      border-radius:8px;
+      color:#bdc3c7;
+      border:1px solid #34495e;
+    }
+
+    .hist-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:6px;
+      font-size:12px;
+    }
+    .hist-title{font-weight:700;}
+    .hist-title span{color:var(--accent);}
+    .hist-info{color:var(--text-muted);font-size:11px;}
+    .history-row-bad td{background:#22080b !important;}
+    .note{
+      margin-top:8px;
+      font-size:10px;
+      color:var(--text-muted);
+      line-height:1.5;
+    }
+
+    .ai-list{
+      font-size:11px;
+      margin:0;
+      padding-left:18px;
+      direction:rtl;
+    }
+    .ai-list li{margin-bottom:6px; position:relative;}
+    .ai-tag{
+        display:inline-block;
+        padding:2px 6px;
+        border-radius:4px;
+        font-size:9px;
+        font-weight:bold;
+        margin-left:5px;
+    }
+    .tag-green{background:rgba(0,184,148,0.2);color:#00b894;}
+    .tag-red{background:rgba(255,82,82,0.2);color:#ff5252;}
+    .tag-blue{background:rgba(52,152,219,0.2);color:#3498db;}
+    .tag-yellow{background:rgba(241,196,15,0.2);color:#f1c40f;}
+
+    /* Floating upload modal */
+    .modal-overlay{
+      display:none;
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.85);
+      z-index:9999;
+      justify-content:center;
+      align-items:center;
+      padding:16px;
+      backdrop-filter:blur(4px);
+    }
+    .modal-content{
+      background:#111318;
+      border-radius:18px;
+      border:1px solid #2a2d37;
+      max-width:520px;
+      width:100%;
+      max-height:90vh;
+      overflow-y:auto;
+      padding:16px 16px 18px;
+      box-shadow:0 18px 40px rgba(0,0,0,0.9);
+    }
+    .modal-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:10px;
+    }
+    .modal-title{font-size:14px;font-weight:700;}
+    .modal-close{
+      background:none;
+      border:none;
+      color:#aaa;
+      font-size:22px;
+      cursor:pointer;
+    }
+    .upload-group{
+      background:#151822;
+      border-radius:12px;
+      border:1px solid #303443;
+      padding:10px 10px;
+      margin-bottom:10px;
+    }
+    .group-label{
+      font-size:12px;
+      color:var(--accent);
+      margin-bottom:6px;
+      border-bottom:1px solid #262a35;
+      padding-bottom:4px;
+      font-weight:600;
+    }
+    .up-btn-row{display:flex;gap:8px;flex-wrap:wrap;}
+    .up-btn{
+      flex:1 1 140px;
+      border-radius:10px;
+      border:1px dashed #4b5163;
+      background:#191d28;
+      padding:10px 6px;
+      cursor:pointer;
+      font-size:11px;
+      color:#d1d5db;
+      text-align:center;
+    }
+    .up-btn:hover{border-color:var(--accent);background:#1f2330;}
+    .file-list{margin-top:6px;display:flex;flex-direction:column;gap:4px;}
+    .file-tag{
+      background:#050608;
+      border-radius:7px;
+      padding:4px 8px;
+      font-size:10px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      border-right:3px solid var(--accent);
+    }
+    .file-name{max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .del-file{
+      cursor:pointer;
+      color:#ff7676;
+      font-weight:700;
+      padding-left:6px;
+    }
+
+    @media print{
+      body{background:#000;padding:0;}
+      .btn-row,.note,.modal-overlay,.data-tools{display:none !important;}
+      .card,.header{box-shadow:none;border-radius:0;}
+    }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="header">
+    <div class="header-title">Tari Profit Tracker</div>
+    <div class="header-sub">
+      صافي الربح = إجمالي المبيعات − إجمالي المشتريات − إجمالي المصروفات − أخرى<br>
+      صافي الكاش = كاش المبيعات − (كاش المشتريات + كاش المصروفات + أخرى)
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title"><span>بيانات اليوم</span></div>
+    <div class="row2">
+      <div class="field">
+        <label>تاريخ اليوم</label>
+        <input type="date" id="dateInput">
+      </div>
+      <div class="field">
+        <label>ملاحظة (اختياري)</label>
+        <input type="text" id="noteInput" placeholder="مثال: شغل ضعيف، مطر، عروض ..">
+      </div>
+    </div>
+
+    <div class="section-title"><span>المبيعات</span></div>
+    <div class="row2">
+      <div class="field">
+        <label>مبيعات كاش</label>
+        <input type="number" id="salesCash" min="0" step="0.01">
+      </div>
+      <div class="field">
+        <label>مبيعات شبكة</label>
+        <input type="number" id="salesCard" min="0" step="0.01">
+      </div>
+    </div>
+
+    <div class="section-title">
+      <span>المشتريات (تكلفة البضاعة)</span>
+      <button type="button" class="btn-small" onclick="addRow('purchase')">إضافة حقل</button>
+    </div>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead>
+        <tr>
+          <th>الفئة</th>
+          <th>كاش</th>
+          <th>شبكة</th>
+          <th>حذف</th>
+        </tr>
+        </thead>
+        <tbody id="purchasesBody"></tbody>
+      </table>
+    </div>
+
+    <div class="section-title">
+      <span>مصروفات تشغيلية</span>
+      <button type="button" class="btn-small" onclick="addRow('expense')">إضافة حقل</button>
+    </div>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead>
+        <tr>
+          <th>الفئة</th>
+          <th>كاش</th>
+          <th>شبكة</th>
+          <th>حذف</th>
+        </tr>
+        </thead>
+        <tbody id="expensesBody"></tbody>
+      </table>
+    </div>
+
+    <div class="section-title">
+      <span>أخرى (Other)</span>
+      <button type="button" class="btn-small" onclick="addRow('other')">إضافة حقل</button>
+    </div>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead>
+        <tr>
+          <th>الفئة</th>
+          <th>كاش</th>
+          <th>شبكة</th>
+          <th>حذف</th>
+        </tr>
+        </thead>
+        <tbody id="otherBody"></tbody>
+      </table>
+    </div>
+
+    <div class="section-title"><span>الملخص الفوري</span></div>
+    <div class="summary-grid">
+      <div class="summary-box">
+        <div class="summary-label">صافي ربح اليوم</div>
+        <div class="summary-value" id="netTodayDisplay">0.00</div>
+      </div>
+      <div class="summary-box">
+        <div class="summary-label">صافي الكاش اليوم</div>
+        <div class="summary-value" id="netCashTodayDisplay">0.00</div>
+      </div>
+      <div class="summary-box summary-box-total">
+        <div class="summary-label">صافي ربح هذا الشهر</div>
+        <div class="summary-value" id="totalNetAllDisplay">0.00</div>
+      </div>
+      <div class="summary-box summary-box-total">
+        <div class="summary-label">صافي كاش هذا الشهر</div>
+        <div class="summary-value" id="totalNetCashAllDisplay">0.00</div>
+      </div>
+      <div class="summary-box summary-box-month">
+        <div class="summary-label">مبيعات هذا الشهر</div>
+        <div class="summary-value" id="monthSalesDisplay">0.00</div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-main" onclick="saveDay()">حفظ اليوم / تحديثه</button>
+      <button class="btn btn-share" onclick="openUploadModal()">مشاركة / حفظ تقرير اليوم (HTML)</button>
+      <button class="btn" style="background:#8e44ad;" onclick="openItemReportModal()">📊 تقرير الشهر (احترافي)</button>
+      <button class="btn btn-secondary" onclick="newDay()">يوم جديد</button>
+      <button class="btn btn-danger" onclick="clearAll()">مسح جميع البيانات</button>
+    </div>
+
+    <div class="data-tools">
+      <button class="btn btn-data" onclick="backupData()">📥 نسخ احتياطي (Backup)</button>
+      <button class="btn btn-data" onclick="document.getElementById('importFile').click()">📤 استعادة بيانات (Restore)</button>
+    </div>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="restoreData(this)">
+    
+    <div class="note">
+      • النسخ الاحتياطي: يحفظ كل بياناتك في ملف صغير. احفظه في مكان آمن.<br>
+      • الاستعادة: حمل الملف لنقل البيانات لجهاز آخر أو استرجاعها.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="hist-header">
+      <div class="hist-title">سجل الأيام السابقة <span>(محفوظة)</span></div>
+      <div class="hist-info" id="rangeSummary"></div>
+    </div>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead>
+        <tr>
+          <th>التاريخ</th>
+          <th>المبيعات</th>
+          <th>المشتريات</th>
+          <th>المصروفات</th>
+          <th>أخرى</th>
+          <th>صافي الربح</th>
+          <th>صافي الكاش</th>
+          <th>تعديل</th>
+        </tr>
+        </thead>
+        <tbody id="historyBody"></tbody>
+      </table>
+    </div>
+    <div class="note" id="totalsFooter"></div>
+  </div>
+
+  <div class="card">
+    <div class="section-title"><span>تحليل ذكي (AI Insights)</span></div>
+    <div id="aiInsights" class="note">
+      يتم تجميع البيانات... احفظ 3 أيام على الأقل لبدء التوقعات.
+    </div>
+  </div>
+</div>
+
+<div id="uploadModal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title">إرفاق المستندات لتقرير اليوم</div>
+      <button class="modal-close" onclick="closeUploadModal()">×</button>
+    </div>
+
+    <div class="upload-group">
+      <div class="group-label">Summary & Report (تقارير وملخصات)</div>
+      <div class="up-btn-row">
+        <button class="up-btn" type="button" onclick="setAttachType('summaryReport')">اختر ملفات (صور / PDF)</button>
+      </div>
+      <div id="list_summaryReport" class="file-list"></div>
+    </div>
+
+    <div class="upload-group">
+      <div class="group-label">فواتير المشتريات (كاش)</div>
+      <div class="up-btn-row">
+        <button class="up-btn" type="button" onclick="setAttachType('purchCash')">اختر ملفات (صور / PDF)</button>
+      </div>
+      <div id="list_purchCash" class="file-list"></div>
+    </div>
+
+    <div class="upload-group">
+      <div class="group-label">فواتير المشتريات (شبكة)</div>
+      <div class="up-btn-row">
+        <button class="up-btn" type="button" onclick="setAttachType('purchCard')">اختر ملفات (صور / PDF)</button>
+      </div>
+      <div id="list_purchCard" class="file-list"></div>
+    </div>
+
+    <div class="upload-group">
+      <div class="group-label">إيصالات موازنة نقاط البيع (POS)</div>
+      <div class="up-btn-row">
+        <button class="up-btn" type="button" onclick="setAttachType('pos')">اختر ملفات (صور / PDF)</button>
+      </div>
+      <div id="list_pos" class="file-list"></div>
+    </div>
+
+    <input id="fileInput" type="file" multiple accept="image/*,application/pdf" style="display:none" onchange="handleFiles(this)">
+
+    <button class="btn btn-share" style="margin-top:10px;" type="button" onclick="generateAndShareReport()">
+      إنشاء ومشاركة التقرير
+    </button>
+  </div>
+</div>
+
+<div id="itemReportModal" class="modal-overlay">
+  <div class="modal-content" style="max-width:500px;">
+    <div class="modal-header">
+      <div class="modal-title">إعداد التقرير الشهري الشامل</div>
+      <button class="modal-close" onclick="document.getElementById('itemReportModal').style.display='none'">×</button>
+    </div>
+    
+    <div style="padding:10px 0;">
+      <div class="field" style="margin-bottom:12px;">
+        <label>اختر الشهر:</label>
+        <input type="month" id="reportMonthInput" style="padding:10px; width:100%; border-radius:8px; background:#191d28; border:1px solid #333; color:#fff;">
+      </div>
+
+      <div class="field" style="margin-bottom:12px;">
+        <label style="color:#f1c40f;">الكاش الفعلي الموجود (للمطابقة):</label>
+        <input type="number" id="actualCashInput" placeholder="أدخل المبلغ الموجود في الصندوق/الخزنة" style="padding:10px; width:100%; border-radius:8px; background:#191d28; border:1px solid #f1c40f; color:#fff;">
+        <div style="font-size:10px; color:#777; margin-top:4px;">اترك الحقل فارغاً إذا لا تريد مطابقة الكاش.</div>
+      </div>
+    </div>
+    
+    <button class="btn btn-share" onclick="generateMonthlyReport()">📄 إنشاء ومشاركة التقرير الاحترافي</button>
+  </div>
+</div>
+
+<script>
+const KEY = "tari_profit_entries_v3";
+let entries = [];
+let purchasesRows = [];
+let expensesRows = [];
+let otherRows = [];
+let rowIdSeq = 1;
+
+let attachments = {summaryReport:[], purchCash:[], purchCard:[], pos:[]};
+let currentAttachType = "purchCash";
+
+function toNum(v){const n=parseFloat(v);return isNaN(n)?0:n;}
+function formatMoney(n){return n.toFixed(2);}
+function todayISO(){
+  const d=new Date();
+  const y=d.getFullYear();
+  const m=String(d.getMonth()+1).padStart(2,"0");
+  const day=String(d.getDate()).padStart(2,"0");
+  return `${y}-${m}-${day}`;
+}
+
+/* Storage */
+function loadEntries(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    entries = raw ? JSON.parse(raw) : [];
+  }catch(e){entries = [];}
+}
+function saveEntries(){
+  localStorage.setItem(KEY, JSON.stringify(entries));
+}
+
+/* Backup & Restore */
+function backupData(){
+  const dataStr = JSON.stringify(entries);
+  const blob = new Blob([dataStr], {type: "application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `Tari_Backup_${todayISO()}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function restoreData(input){
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try {
+      const loaded = JSON.parse(e.target.result);
+      if(Array.isArray(loaded)){
+        if(confirm("سيتم استبدال البيانات الحالية بالبيانات الموجودة في الملف. هل أنت متأكد؟")){
+          entries = loaded;
+          saveEntries();
+          renderHistory();
+          recalcLive();
+          alert("تم استعادة البيانات بنجاح!");
+        }
+      } else {
+        alert("ملف غير صالح.");
+      }
+    } catch(err) {
+      alert("حدث خطأ أثناء قراءة الملف.");
+    }
+  };
+  reader.readAsText(file);
+  input.value = "";
+}
+
+/* Default rows */
+function initDefaultRows(){
+  purchasesRows = [
+    {id:rowIdSeq++, name:"Romi",       cash:"", card:""},
+    {id:rowIdSeq++, name:"Vegetables", cash:"", card:""},
+    {id:rowIdSeq++, name:"Packaging",  cash:"", card:""}
+  ];
+  expensesRows = [
+    {id:rowIdSeq++, name:"Gas",   cash:"", card:""},
+    {id:rowIdSeq++, name:"Fuel",  cash:"", card:""},
+    {id:rowIdSeq++, name:"Water", cash:"", card:""},
+    {id:rowIdSeq++, name:"Rent",  cash:"", card:""}
+  ];
+  otherRows = [
+    {id:rowIdSeq++, name:"", cash:"", card:""}
+  ];
+}
+
+/* Render rows */
+function renderRows(kind){
+  let rows, tbodyId;
+
+  if(kind === "purchase") { rows = purchasesRows; tbodyId = "purchasesBody"; }
+  else if(kind === "expense") { rows = expensesRows; tbodyId = "expensesBody"; }
+  else { rows = otherRows; tbodyId = "otherBody"; }
+
+  const tbody = document.getElementById(tbodyId);
+  tbody.innerHTML = "";
+  
+  rows.forEach(row=>{
+    const tr = document.createElement("tr");
+    
+    // Name
+    const tdName = document.createElement("td");
+    const nameInput = document.createElement("input");
+    nameInput.type="text";
+    nameInput.className="cat-input";
+    nameInput.placeholder="اسم الفئة";
+    nameInput.value=row.name||"";
+    nameInput.dataset.kind=kind;
+    nameInput.dataset.id=row.id;
+    nameInput.dataset.field="name";
+    nameInput.oninput=handleRowInput;
+    tdName.appendChild(nameInput);
+    tr.appendChild(tdName);
+
+    // Cash
+    const tdCash=document.createElement("td");
+    const cashInput=document.createElement("input");
+    cashInput.type="number";
+    cashInput.step="0.01";
+    cashInput.className="cat-input";
+    cashInput.placeholder="كاش";
+    cashInput.value=row.cash||"";
+    cashInput.dataset.kind=kind;
+    cashInput.dataset.id=row.id;
+    cashInput.dataset.field="cash";
+    cashInput.oninput=handleRowInput;
+    tdCash.appendChild(cashInput);
+    tr.appendChild(tdCash);
+
+    // Card
+    const tdCard=document.createElement("td");
+    const cardInput=document.createElement("input");
+    cardInput.type="number";
+    cardInput.step="0.01";
+    cardInput.className="cat-input";
+    cardInput.placeholder="شبكة";
+    cardInput.value=row.card||"";
+    cardInput.dataset.kind=kind;
+    cardInput.dataset.id=row.id;
+    cardInput.dataset.field="card";
+    cardInput.oninput=handleRowInput;
+    tdCard.appendChild(cardInput);
+    tr.appendChild(tdCard);
+
+    // Delete
+    const tdDel=document.createElement("td");
+    const delBtn=document.createElement("button");
+    delBtn.type="button";
+    delBtn.className="btn-small";
+    delBtn.style.color="#ff5252";
+    delBtn.textContent="حذف";
+    delBtn.onclick=()=>deleteRow(kind,row.id);
+    tdDel.appendChild(delBtn);
+    tr.appendChild(tdDel);
+
+    tbody.appendChild(tr);
+  });
+}
+
+function handleRowInput(e){
+  const kind=e.target.dataset.kind;
+  const id=parseInt(e.target.dataset.id,10);
+  const field=e.target.dataset.field;
+  
+  let arr;
+  if(kind==="purchase") arr=purchasesRows;
+  else if(kind==="expense") arr=expensesRows;
+  else arr=otherRows;
+
+  const row = arr.find(r=>r.id===id);
+  if(!row) return;
+  row[field]=e.target.value;
+  recalcLive();
+}
+
+function addRow(kind){
+  let arr;
+  if(kind==="purchase") arr=purchasesRows;
+  else if(kind==="expense") arr=expensesRows;
+  else arr=otherRows;
+
+  arr.push({id:rowIdSeq++,name:"",cash:"",card:""});
+  renderRows(kind);
+  recalcLive();
+}
+
+function deleteRow(kind,id){
+  let arr;
+  if(kind==="purchase") arr=purchasesRows;
+  else if(kind==="expense") arr=expensesRows;
+  else arr=otherRows;
+
+  const idx=arr.findIndex(r=>r.id===id);
+  if(idx===-1) return;
+  arr.splice(idx,1);
+  renderRows(kind);
+  recalcLive();
+}
+
+/* Totals */
+function computeTotals(salesCash,salesCard,pRows,eRows,oRows){
+  let pCash=0,pCard=0,eCash=0,eCard=0,oCash=0,oCard=0;
+  
+  (pRows||[]).forEach(r=>{ pCash+=toNum(r.cash); pCard+=toNum(r.card); });
+  (eRows||[]).forEach(r=>{ eCash+=toNum(r.cash); eCard+=toNum(r.card); });
+  (oRows||[]).forEach(r=>{ oCash+=toNum(r.cash); oCard+=toNum(r.card); });
+
+  const totalSales=salesCash+salesCard;
+  const totalPurchases=pCash+pCard;
+  const totalExpenses=eCash+eCard;
+  const totalOther=oCash+oCard;
+  const net=totalSales-totalPurchases-totalExpenses-totalOther;
+  const netCash=salesCash-(pCash+eCash+oCash);
+  
+  return {
+    salesCash,salesCard,
+    pCash,pCard,
+    eCash,eCard,
+    oCash,oCard,
+    totalSales,totalPurchases,totalExpenses,totalOther,
+    net,netCash
+  };
+}
+
+function recalcLive(){
+  const salesCash = toNum(document.getElementById("salesCash").value);
+  const salesCard = toNum(document.getElementById("salesCard").value);
+  const t = computeTotals(salesCash, salesCard, purchasesRows, expensesRows, otherRows);
+
+  document.getElementById("netTodayDisplay").textContent = formatMoney(t.net);
+  document.getElementById("netCashTodayDisplay").textContent = formatMoney(t.netCash);
+
+  const todayDate = document.getElementById("dateInput").value || todayISO();
+  const currentMonthPrefix = todayDate.substring(0, 7); 
+
+  let monthlySales = 0;
+  let monthlyNet = 0;
+  let monthlyNetCash = 0;
+
+  entries.forEach(e => {
+    if (e.date.startsWith(currentMonthPrefix) && e.date !== todayDate) {
+      const oldT = computeTotals(e.salesCash||0, e.salesCard||0, e.purchasesRows||[], e.expensesRows||[], e.otherRows||[]);
+      monthlySales += oldT.totalSales;
+      monthlyNet += oldT.net;
+      monthlyNetCash += oldT.netCash;
+    }
+  });
+
+  monthlySales += t.totalSales;
+  monthlyNet += t.net;
+  monthlyNetCash += t.netCash;
+
+  document.getElementById("totalNetAllDisplay").textContent = formatMoney(monthlyNet);
+  document.getElementById("totalNetCashAllDisplay").textContent = formatMoney(monthlyNetCash);
+  document.getElementById("monthSalesDisplay").textContent = formatMoney(monthlySales);
+
+  return { ...t, monthlySalesTotal: monthlySales, totalNetAll: monthlyNet };
+}
+
+/* Save/Load Day */
+function getCurrentData(){
+  const salesCash=toNum(document.getElementById("salesCash").value);
+  const salesCard=toNum(document.getElementById("salesCard").value);
+  const totals=computeTotals(salesCash,salesCard,purchasesRows,expensesRows,otherRows);
+  return {
+    date:document.getElementById("dateInput").value || todayISO(),
+    note:document.getElementById("noteInput").value||"",
+    salesCash,
+    salesCard,
+    purchasesRows:JSON.parse(JSON.stringify(purchasesRows)),
+    expensesRows:JSON.parse(JSON.stringify(expensesRows)),
+    otherRows:JSON.parse(JSON.stringify(otherRows)),
+    net:totals.net,
+    netCash:totals.netCash
+  };
+}
+function saveDay(){
+  const data=getCurrentData();
+  document.getElementById("dateInput").value=data.date;
+  const idx=entries.findIndex(e=>e.date===data.date);
+  if(idx>=0) entries[idx]=data; else entries.push(data);
+  saveEntries();
+  renderHistory();
+  recalcLive();
+  alert("تم حفظ اليوم / تحديثه");
+}
+function loadDayToForm(date){
+  const e=entries.find(x=>x.date===date);
+  if(!e){
+    document.getElementById("noteInput").value="";
+    document.getElementById("salesCash").value="";
+    document.getElementById("salesCard").value="";
+    initDefaultRows();
+  }else{
+    document.getElementById("dateInput").value=e.date;
+    document.getElementById("noteInput").value=e.note||"";
+    document.getElementById("salesCash").value=e.salesCash??"";
+    document.getElementById("salesCard").value=e.salesCard??"";
+    purchasesRows=Array.isArray(e.purchasesRows)?JSON.parse(JSON.stringify(e.purchasesRows)):[];
+    expensesRows=Array.isArray(e.expensesRows)?JSON.parse(JSON.stringify(e.expensesRows)):[];
+    otherRows=Array.isArray(e.otherRows)?JSON.parse(JSON.stringify(e.otherRows)):[];
+    if(!purchasesRows.length && !expensesRows.length && !otherRows.length) initDefaultRows();
+  }
+  renderRows("purchase");
+  renderRows("expense");
+  renderRows("other");
+  recalcLive();
+}
+function newDay(){
+  document.getElementById("dateInput").value=todayISO();
+  document.getElementById("noteInput").value="";
+  document.getElementById("salesCash").value="";
+  document.getElementById("salesCard").value="";
+  initDefaultRows();
+  renderRows("purchase");
+  renderRows("expense");
+  renderRows("other");
+  recalcLive();
+}
+function clearAll(){
+  if(!confirm("متأكد أنك تريد مسح جميع البيانات نهائياً؟")) return;
+  entries=[];
+  saveEntries();
+  newDay();
+  renderHistory();
+  recalcLive();
+}
+
+/* History */
+function renderHistory(){
+  entries.sort((a,b)=>(a.date||"").localeCompare(b.date||""));
+  const body=document.getElementById("historyBody");
+  body.innerHTML="";
+  let sumNet=0,sumNetCash=0;
+  
+  entries.forEach(e=>{
+    const t=computeTotals(e.salesCash||0,e.salesCard||0,e.purchasesRows||[],e.expensesRows||[],e.otherRows||[]);
+    sumNet+=t.net;
+    sumNetCash+=t.netCash;
+
+    const tr=document.createElement("tr");
+    if(t.net<0 || t.netCash<0) tr.classList.add("history-row-bad");
+    const cells=[
+        e.date,
+        formatMoney(t.totalSales),
+        formatMoney(t.totalPurchases),
+        formatMoney(t.totalExpenses),
+        formatMoney(t.totalOther),
+        formatMoney(t.net),
+        formatMoney(t.netCash)
+    ];
+    cells.forEach(v=>{
+      const td=document.createElement("td");
+      td.textContent=v;
+      tr.appendChild(td);
+    });
+    const tdEdit=document.createElement("td");
+    const btn=document.createElement("button");
+    btn.type="button";
+    btn.className="btn-small";
+    btn.textContent="تعديل";
+    btn.onclick=()=>{
+      loadDayToForm(e.date);
+      window.scrollTo({top:0,behavior:"smooth"});
+    };
+    tdEdit.appendChild(btn);
+    tr.appendChild(tdEdit);
+    body.appendChild(tr);
+  });
+
+  const range=document.getElementById("rangeSummary");
+  if(entries.length) range.textContent=`مجموع الأيام: ${entries.length}`;
+  else range.textContent="لا توجد أيام محفوظة بعد.";
+  
+  updateAIInsights();
+}
+
+/* AI Logic (Simple) */
+function updateAIInsights(){
+  const box=document.getElementById("aiInsights");
+  if(entries.length < 2){
+    box.textContent="يلزم توفر بيانات يومين على الأقل لإظهار التحليلات.";
+    return;
+  }
+  // Simple insight generation just for the main screen (detailed AI is in report)
+  const lastEntry = entries[entries.length-1];
+  const t = computeTotals(lastEntry.salesCash||0, lastEntry.salesCard||0, lastEntry.purchasesRows, lastEntry.expensesRows, lastEntry.otherRows);
+  const margin = t.totalSales > 0 ? ((t.net/t.totalSales)*100).toFixed(1) : 0;
+  
+  box.innerHTML = `
+    <ul class="ai-list">
+      <li>هامش ربح آخر يوم مسجل (${lastEntry.date}) هو <span class="ai-tag tag-blue">%${margin}</span>.</li>
+      <li>لمشاهدة تحليل تفصيلي وذكاء اصطناعي شامل، اضغط على زر "تقرير الشهر".</li>
+    </ul>
+  `;
+}
+
+/* --- NEW MONTHLY REPORT LOGIC (PROFESSIONAL) --- */
+function openItemReportModal() {
+  const d = new Date();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const y = d.getFullYear();
+  document.getElementById('reportMonthInput').value = `${y}-${m}`;
+  document.getElementById('actualCashInput').value = ""; // Reset
+  document.getElementById('itemReportModal').style.display = 'flex';
+}
+
+function generateMonthlyReport() {
+  const selectedMonth = document.getElementById('reportMonthInput').value;
+  const actualCashInput = document.getElementById('actualCashInput').value;
+  const actualCash = actualCashInput ? parseFloat(actualCashInput) : null;
+  
+  if (!selectedMonth) return;
+
+  // 1. Data Aggregation
+  let totals = {
+    salesCash: 0, salesCard: 0, totalSales: 0,
+    purchases: 0, expenses: 0, other: 0,
+    net: 0, netCash: 0
+  };
+
+  const purchasesMap = {};
+  const expensesMap = {};
+  const otherMap = {};
+
+  const processItems = (rows, map) => {
+    (rows || []).forEach(item => {
+      let rawName = (item.name || "").trim();
+      if (!rawName) return;
+      let key = rawName.toLowerCase();
+      let cost = toNum(item.cash) + toNum(item.card);
+      if (cost > 0) {
+        if (!map[key]) map[key] = { name: rawName, total: 0, count: 0 };
+        map[key].total += cost;
+        map[key].count += 1;
+      }
+    });
+  };
+
+  entries.forEach(entry => {
+    if (entry.date.startsWith(selectedMonth)) {
+      const t = computeTotals(entry.salesCash||0, entry.salesCard||0, entry.purchasesRows, entry.expensesRows, entry.otherRows);
+      
+      totals.salesCash += t.salesCash;
+      totals.salesCard += t.salesCard;
+      totals.totalSales += t.totalSales;
+      totals.purchases += t.totalPurchases;
+      totals.expenses += t.totalExpenses;
+      totals.other += t.totalOther;
+      totals.net += t.net;
+      totals.netCash += t.netCash;
+
+      processItems(entry.purchasesRows, purchasesMap);
+      processItems(entry.expensesRows, expensesMap);
+      processItems(entry.otherRows, otherMap);
+    }
+  });
+
+  // Sort maps
+  const sortMap = (map) => Object.values(map).sort((a,b)=>b.total - a.total);
+  const pList = sortMap(purchasesMap);
+  const eList = sortMap(expensesMap);
+  const oList = sortMap(otherMap);
+
+  // 2. Calculations
+  const netProfitCard = totals.net - totals.netCash; // Inferred
+  let cashDiffHtml = "";
+  if(actualCash !== null) {
+      const diff = actualCash - totals.netCash;
+      const color = diff >= 0 ? "green" : "red";
+      const status = diff >= 0 ? "Surplus (زيادة)" : "Shortage (عجز)";
+      cashDiffHtml = `
+        <div class="variance-box ${diff<0?'var-bad':'var-good'}">
+          <div>Expected Cash: <strong>${formatMoney(totals.netCash)}</strong></div>
+          <div>Actual Cash: <strong>${formatMoney(actualCash)}</strong></div>
+          <div style="font-size:16px; margin-top:4px;">Result: <span style="color:${color}; font-weight:bold">${status} ${formatMoney(Math.abs(diff))}</span></div>
+        </div>
+      `;
+  }
+
+  // 3. Auto-AI Generation for Report
+  let insightsHtml = "";
+  const margin = totals.totalSales > 0 ? (totals.net / totals.totalSales * 100).toFixed(1) : 0;
+  const topExp = eList.length ? eList[0].name : "None";
+  insightsHtml += `<li><strong>Profit Margin:</strong> Your net profit margin this month is ${margin}%.</li>`;
+  if(pList.length) insightsHtml += `<li><strong>Top Purchase:</strong> Highest cost was on "${pList[0].name}".</li>`;
+  if(eList.length) insightsHtml += `<li><strong>Top Expense:</strong> Highest operating cost was "${eList[0].name}".</li>`;
+  if(actualCash !== null) {
+      const diff = actualCash - totals.netCash;
+      if(diff < -5) insightsHtml += `<li><strong>Cash Alert:</strong> There is a cash shortage of ${formatMoney(Math.abs(diff))}. Check daily logs.</li>`;
+      else if(diff > 5) insightsHtml += `<li><strong>Cash Note:</strong> Small surplus detected.</li>`;
+      else insightsHtml += `<li><strong>Cash Status:</strong> Cash matches records perfectly. Excellent!</li>`;
+  }
+
+  // 4. Build HTML
+  const buildTable = (title, list) => {
+    if(!list.length) return "";
+    let rows = list.map(i => `<tr><td>${i.name}</td><td>${i.count}</td><td>${formatMoney(i.total)}</td></tr>`).join("");
+    return `
+      <div class="table-section">
+        <h3>${title}</h3>
+        <table>
+          <thead><tr><th>Item</th><th>Qty/Days</th><th>Total</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    `;
+  };
+
+  const reportHtml = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Monthly Report - ${selectedMonth}</title>
+<style>
+  body{font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:#f4f7f6; color:#333; padding:20px; -webkit-print-color-adjust: exact;}
+  .wrap{max-width:1000px; margin:0 auto; background:#fff; padding:40px; border-radius:8px; box-shadow:0 4px 15px rgba(0,0,0,0.1);}
+  .header{text-align:center; margin-bottom:30px; border-bottom:2px solid #eee; padding-bottom:20px;}
+  .header h1{margin:0; color:#2c3e50; font-size:28px;}
+  .header p{color:#7f8c8d; margin:5px 0 0;}
+  
+  .grid-tables{display:flex; gap:20px; flex-wrap:wrap; margin-bottom:30px;}
+  .table-section{flex:1; min-width:280px;}
+  h3{border-bottom:2px solid #3498db; padding-bottom:5px; color:#2980b9; font-size:16px;}
+  table{width:100%; border-collapse:collapse; font-size:13px;}
+  th, td{padding:8px; text-align:left; border-bottom:1px solid #eee;}
+  th{background:#f8f9fa; color:#555;}
+  tr:last-child td{border-bottom:none;}
+
+  .financial-summary{background:#f8f9fa; padding:20px; border-radius:8px; border:1px solid #e1e4e8; margin-top:30px;}
+  .sum-row{display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px dashed #ddd;}
+  .sum-row:last-child{border-bottom:none;}
+  .sum-main{font-weight:bold; font-size:16px; color:#2c3e50;}
+  .sum-sub{font-size:13px; color:#7f8c8d; margin-left:20px;}
+  .total-block{margin-top:20px; border-top:2px solid #2c3e50; padding-top:10px; font-size:18px; font-weight:bold;}
+
+  .variance-box{margin-top:20px; padding:15px; border-radius:6px; background:#fff; border:1px solid #ddd; text-align:center;}
+  .var-good{background:#d4edda; border-color:#c3e6cb; color:#155724;}
+  .var-bad{background:#f8d7da; border-color:#f5c6cb; color:#721c24;}
+
+  .ai-section{margin-top:30px; padding:20px; background:#eaf2f8; border-radius:8px; border-left:5px solid #3498db;}
+  .ai-section h4{margin:0 0 10px; color:#2980b9;}
+  .ai-section ul{margin:0; padding-left:20px; font-size:14px; line-height:1.6;}
+
+  .footer{text-align:center; font-size:11px; color:#aaa; margin-top:40px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <h1>Monthly Financial Report</h1>
+    <p>Period: ${selectedMonth} • Generated by Tari Profit Tracker</p>
+  </div>
+
+  <div class="grid-tables">
+    ${buildTable("Purchases Summary", pList)}
+    ${buildTable("Expenses Summary", eList)}
+    ${buildTable("Withdraw Summary", oList)}
+  </div>
+
+  <div class="financial-summary">
+    <h3>Financial Position</h3>
+    
+    <div class="sum-row">
+      <span>Total Sales</span>
+      <span>${formatMoney(totals.totalSales)} SAR</span>
+    </div>
+    <div class="sum-row">
+      <span class="sum-sub">Total Cash Sales</span>
+      <span class="sum-sub">${formatMoney(totals.salesCash)}</span>
+    </div>
+    <div class="sum-row">
+      <span class="sum-sub">Total Card Sales</span>
+      <span class="sum-sub">${formatMoney(totals.salesCard)}</span>
+    </div>
+
+    <br>
+
+    <div class="sum-row">
+      <span>Total Purchases (COGS)</span>
+      <span style="color:#c0392b">-${formatMoney(totals.purchases)}</span>
+    </div>
+    <div class="sum-row">
+      <span>Total Expenses (OpEx)</span>
+      <span style="color:#c0392b">-${formatMoney(totals.expenses)}</span>
+    </div>
+    <div class="sum-row">
+      <span>Total Other Costs</span>
+      <span style="color:#c0392b">-${formatMoney(totals.other)}</span>
+    </div>
+
+    <div class="sum-row total-block">
+      <span>NET PROFIT</span>
+      <span style="color:${totals.net>=0?'#27ae60':'#c0392b'}">${formatMoney(totals.net)} SAR</span>
+    </div>
+    <div class="sum-row">
+      <span class="sum-sub">Net Profit (Cash Hand)</span>
+      <span class="sum-sub">${formatMoney(totals.netCash)}</span>
+    </div>
+    <div class="sum-row">
+      <span class="sum-sub">Net Profit (Bank/Card)</span>
+      <span class="sum-sub">${formatMoney(netProfitCard)}</span>
+    </div>
+
+    ${cashDiffHtml}
+  </div>
+
+  <div class="ai-section">
+    <h4>🤖 AI Executive Insights</h4>
+    <ul>${insightsHtml}</ul>
+  </div>
+
+  <div class="footer">
+    Private & Confidential • Tari Web App
+  </div>
+</div>
+</body>
+</html>
+  `;
+
+  shareHtmlFile(reportHtml, `Tari_Monthly_Report_${selectedMonth}.html`);
+}
+
+function shareHtmlFile(htmlContent, fileName){
+  const blob = new Blob([htmlContent], {type: "text/html"});
+  const file = new File([blob], fileName, {type: "text/html"});
+  
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    navigator.share({
+      files: [file],
+      title: "Monthly Financial Report",
+      text: "Please find attached the monthly financial report."
+    }).catch(console.error);
+  } else {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+}
+
+/* Attachments & Compression */
+function openUploadModal(){
+  recalcLive();
+  document.getElementById("uploadModal").style.display="flex";
+}
+function closeUploadModal(){
+  document.getElementById("uploadModal").style.display="none";
+}
+function setAttachType(type){
+  currentAttachType=type;
+  document.getElementById("fileInput").click();
+}
+function compressImage(file, maxWidth = 1000, quality = 0.6) {
+  return new Promise((resolve) => {
+    if(file.type === 'application/pdf') {
+        const reader = new FileReader();
+        reader.onload = e => resolve({
+            name: file.name,
+            type: file.type,
+            data: e.target.result
+        });
+        reader.readAsDataURL(file);
+        return;
+    }
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target.result;
+      img.onload = () => {
+        const elem = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        if (width > maxWidth) { height *= maxWidth / width; width = maxWidth; }
+        elem.width = width; elem.height = height;
+        const ctx = elem.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve({
+            name: file.name,
+            type: 'image/jpeg',
+            data: elem.toDataURL('image/jpeg', quality)
+        });
+      };
+    };
+  });
+}
+async function handleFiles(input){
+  if(!input.files || !input.files.length) return;
+  const btn = document.querySelector(`button[onclick="setAttachType('${currentAttachType}')"]`);
+  const originalText = btn.innerText;
+  btn.innerText = "جاري المعالجة...";
+  btn.disabled = true;
+  const files = Array.from(input.files);
+  for (const file of files) {
+      try {
+          const result = await compressImage(file);
+          attachments[currentAttachType].push(result);
+      } catch (err) { console.error(err); alert("Error processing file"); }
+  }
+  renderAttachmentList(currentAttachType);
+  btn.innerText = originalText;
+  btn.disabled = false;
+  input.value="";
+}
+function renderAttachmentList(type){
+  const box=document.getElementById("list_"+type);
+  box.innerHTML="";
+  attachments[type].forEach((f,idx)=>{
+    const div=document.createElement("div");
+    div.className="file-tag";
+    const spanName=document.createElement("span");
+    spanName.className="file-name";
+    spanName.textContent=f.name;
+    const spanDel=document.createElement("span");
+    spanDel.className="del-file";
+    spanDel.textContent="حذف";
+    spanDel.onclick=()=>{attachments[type].splice(idx,1);renderAttachmentList(type);};
+    div.appendChild(spanName); div.appendChild(spanDel); box.appendChild(div);
+  });
+}
+
+/* Daily Report Generation */
+function generateAndShareReport(){
+  const totals = recalcLive();
+  const date = document.getElementById("dateInput").value || todayISO();
+  const note = (document.getElementById("noteInput").value||"").trim();
+
+  const buildRows = (rows) => {
+    let h = '';
+    (rows || []).forEach(r => {
+      const total = toNum(r.cash) + toNum(r.card);
+      if(total <= 0) return;
+      h += `<tr><td>${(r.name || '').trim() || '-'}</td><td>${formatMoney(total)}</td></tr>`;
+    });
+    return h;
+  };
+  const buildAttachGrid = (list, title) => {
+    if(!list.length) return '';
+    let h = `<div class="attach-section"><h3>${title}</h3><div class="grid-img">`;
+    list.forEach(f=>{
+      if(f.type.includes('pdf')) h += `<div class="file-box"><div class="fname">${f.name}</div><a class="btn-download" href="${f.data}" download="${f.name}">PDF</a></div>`;
+      else h += `<div class="file-box"><img src="${f.data}" class="lightbox-trigger"></div>`;
+    });
+    return h + `</div></div>`;
+  };
+
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><title>Report ${date}</title>
+  <style>body{font-family:system-ui;background:#f5f5f5;padding:20px}.card{background:#fff;padding:20px;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,0.1)}table{width:100%;border-collapse:collapse;margin-bottom:10px}td,th{border:1px solid #eee;padding:8px}h2{font-size:16px;margin-top:20px;border-bottom:2px solid #eee}.pill{background:#f9f9f9;padding:10px;margin:5px;display:inline-block;border-radius:8px}.attach-section{margin-top:20px}.grid-img{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:5px}.file-box img{width:100%;height:60px;object-fit:cover}</style></head>
+  <body><div class="card"><h1>Daily Report: ${date}</h1><p>${note}</p>
+  <h2>Sales</h2><table><tr><td>Cash</td><td>${formatMoney(totals.salesCash)}</td></tr><tr><td>Card</td><td>${formatMoney(totals.salesCard)}</td></tr><tr><th>Total</th><th>${formatMoney(totals.totalSales)}</th></tr></table>
+  <h2>Purchases</h2><table>${buildRows(purchasesRows)}<tr><th>Total</th><th>${formatMoney(totals.totalPurchases)}</th></tr></table>
+  <h2>Expenses</h2><table>${buildRows(expensesRows)}<tr><th>Total</th><th>${formatMoney(totals.totalExpenses)}</th></tr></table>
+  <h2>Other</h2><table>${buildRows(otherRows)}<tr><th>Total</th><th>${formatMoney(totals.totalOther)}</th></tr></table>
+  <div class="pill">Net Profit: <strong>${formatMoney(totals.net)}</strong></div>
+  <div class="pill">Net Cash: <strong>${formatMoney(totals.netCash)}</strong></div>
+  ${buildAttachGrid(attachments.summaryReport,'Attachments')}
+  ${buildAttachGrid(attachments.purchCash,'Purchases Cash')}
+  ${buildAttachGrid(attachments.purchCard,'Purchases Card')}
+  </div></body></html>`;
+  
+  shareHtmlFile(html, `Tari_Daily_${date}.html`);
+}
+
+/* INIT */
+(function init(){
+  document.getElementById("dateInput").value=todayISO();
+  loadEntries();
+  initDefaultRows();
+  renderRows("purchase");
+  renderRows("expense");
+  renderRows("other");
+  renderHistory();
+  ["salesCash","salesCard"].forEach(id=>document.getElementById(id).addEventListener("input",recalcLive));
+  document.getElementById("dateInput").addEventListener("change",function(){loadDayToForm(this.value||todayISO());});
+  recalcLive();
+})();
+</script>
+</body>
+</html>
