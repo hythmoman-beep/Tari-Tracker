@@ -1,36 +1,49 @@
-const CACHE_NAME = 'tari-tracker-v1';
-const ASSETS = [
-  './',
-  './index.html',
+const CACHE_NAME = 'tari-cache-v6';
+const urlsToCache = [
+  './tari-tracker.html',
   './manifest.json'
-  // Add './icon-192.png' here if you have the image
 ];
 
-// Install Event (Cache files)
-self.addEventListener('install', (e) => {
-  e.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS);
-    })
+// Install
+self.addEventListener('install', event => {
+  self.skipWaiting();
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
   );
 });
 
-// Fetch Event (Serve from cache if offline)
-self.addEventListener('fetch', (e) => {
-  e.respondWith(
-    caches.match(e.request).then((response) => {
-      return response || fetch(e.request);
-    })
-  );
-});
-
-// Activate Event (Clean old caches)
-self.addEventListener('activate', (e) => {
-  e.waitUntil(
-    caches.keys().then((keys) => {
+// Activate - Clean up old caches
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
       return Promise.all(
-        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
+        cacheNames.map(cache => {
+          if (cache !== CACHE_NAME) {
+            return caches.delete(cache);
+          }
+        })
       );
     })
+  );
+});
+
+// Fetch Strategy: NETWORK FIRST (Falls back to cache only if offline)
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    fetch(event.request)
+      .then(response => {
+        // If we got a valid response, clone it and update the cache
+        if (response && response.status === 200) {
+          const responseClone = response.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, responseClone);
+          });
+        }
+        return response;
+      })
+      .catch(() => {
+        // If offline, try to get from cache
+        return caches.match(event.request);
+      })
   );
 });
