@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tari-cache-v6';
+const CACHE_NAME = 'Tari Profit Tracker v.7';
 const urlsToCache = [
   './tari-tracker.html',
   './manifest.json'
